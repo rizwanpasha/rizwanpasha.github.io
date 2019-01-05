@@ -1,0 +1,40 @@
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: royalblue;
+    width: 100vw;
+    height: 100vh;
+}
+
+canvas {
+    background: #141414;
+    display: block;
+    border-radius: 5px;
+    box-shadow: 0px 5px 30px 4px rgba(0, 0, 0, 0.5);
+    margin: 10px auto;
+}
+
+#clear-button {
+    display: block;
+    margin: 0 auto;
+    color: white;
+    padding: 5px;
+    border-radius: 3px;
+    border-style: none;
+    font-size: 20px;
+    background: coral;
+    cursor: pointer;
+    box-shadow: 0px 5px 30px 4px rgba(0, 0, 0, 0.5);
+    transition: all 0.1s ease-out;
+    outline: none;
+}
+
+#clear-button:active {
+    box-shadow: none;
+}

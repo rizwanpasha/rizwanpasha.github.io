@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Web Notifications</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        body {
+            background: linear-gradient(#109fff, #0267cc) no-repeat;
+            display: block;
+            height: 100vh;
+        }
+
+        p {
+            font-size: 4em;
+            white-space: nowrap;
+            color: white;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: 0.3s text-shadow linear;
+            text-shadow: none;
+        }
+
+        p:hover {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+         @media (max-width:700px){
+            p{
+                font-size:2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <p>Web Notification Demo.</p>
+    <script src="notifications.js"></script>
+</body>
+
+</html>

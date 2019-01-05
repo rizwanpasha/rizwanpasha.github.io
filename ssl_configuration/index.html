@@ -1,0 +1,805 @@
+<html>
+
+<head>
+    <title>SSL Configuration. A Complete Walkthrough.</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Encode+Sans+Semi+Expanded" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="description" content="Create SSL Certificates using OpenSSL.">
+    <meta name="keywords" content="SSL,OpenSSL,Certificates,Keystores">
+    <meta name="author" content="Rizwan Pasha">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div class="title-container">
+        <div class="title">SSL Configuration.
+            <p>A Complete Walkthrough.</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="headers">
+            <a href="#1">1. Creating a ( proxy ) Root Certificate Authority.</a>
+            <a href="#2">2. Generating self-signed server certificate.</a>
+            <a href="#3">3. Generating self-signed server certificate for IP address and subdomains.</a>
+            <a href="#4">4. Generating self-signed client certificate.</a>
+            <a href="#5">5. Creating new keystore from existing certificates.</a>
+            <a href="#6">6. Importing or add certificates into existing keystores.</a>
+            <a href="#7">7. Deleting the certificate from the keystore.</a>
+            <a href="#8">8. Renaming certificate alias.</a>
+            <a href="#9">9. Changing keystore password.</a>
+            <a href="#10">10. List keystore content.</a>
+        </div>
+        <div class="section" id="1">
+            <p class="section-header">1. Creating a ( proxy ) Root Certificate Authority.</p>
+            <div class="section-body">
+                <p>Root Certificate Authority or Root CA in short, is the authority who reserves the rights to provide SSL certificates
+                    for websites.
+                    <br> We can create a proxy CA to create self-signed SSL certificates for testing/personal use.
+                    <br> These certificates are based on x509 public-private key encryption standard.</p>
+                <br>
+                <p class="important-text">IMPORTANT: Never user self-signed SSL certificates in the production environment.</p>
+                <br>
+                <p>Follow the below steps to generate Root CA.</p>
+                <br>
+                <div class="sub-section">
+                    <p>i) First, let's generate a private key for our Root CA. Store this key in a secure location as this key
+                        will be used for generating further certificates and compromising the key can cause all of the certificates
+                        generated using this key to be invalidated or to exploit any security vulnerability.</p>
+                    <br />
+                    <div class="code">openssl genrsa -des3 -out
+                        <span class="code-hilight">ROOT_CA.key</span> 2048</div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>genrsa</td>
+                                <td>: Uses RSA algorithm to create the private key.</td>
+                            </tr>
+                            <tr>
+                                <td>-des3</td>
+                                <td>: protects your private key password. use -nodes if you don't want to password protect the
+                                    key, but it is highly recommended that you do.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the private key file.</td>
+                            </tr>
+                            <tr>
+                                <td>2048</td>
+                                <td>: Uses 2048 bit encoding.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>Above command will prompt you to enter a password for the private key.</p>
+                </div>
+                <br>
+                <div class="sub-section">
+                    <p>ii) Next, use the above generated private key to generate Root CA certificate.</p>
+                    <br />
+                    <div class="code">openssl req -new -x509 -days
+                        <span class="code-hilight"></span>365</span> -key
+                        <span class="code-hilight">ROOT_CA.key</span> -sha256 -out
+                        <span class="code-hilight">ROOT_CA.crt</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-new</td>
+                                <td>: Generates new certificate.</td>
+                            </tr>
+                            <tr>
+                                <td>-x509</td>
+                                <td>: Defines standard for public key infrastructure</td>
+                            </tr>
+                            <tr>
+                                <td>-days</td>
+                                <td>: Validity of certificate in days, here 365 days.</td>
+                            </tr>
+                            <tr>
+                                <td>-key</td>
+                                <td>: Name of the private key generated in above step ie; ROOT_CA.key.</td>
+                            </tr>
+                            <tr>
+                                <td>-sha256</td>
+                                <td>: Hashing algorithm used in generating the certificate which is of 256 bits in length.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the generated certificate ie; ROOT_CA.crt.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>Above command will prompt you to enter the password for the private key, followed by basic information
+                        which will be used to generate the certificate ie;</p>
+                    <br>
+                    <div class="options-entry">
+                        <p>Country Name, State or Province Name,</p>
+                        <p>Locality ( City name ),</p>
+                        <p>Organization Name,</p>
+                        <p>Organization Unit Name ( Can be department name ),</p>
+                        <p>Common Name ( Commonly Name of the organization domain name, which will be used as an identifier
+                            ),
+                        </p>
+                        <p>Email Address ( optional ).</p>
+                    </div>
+                    <br> This information can also be stored in a configuration ( .cnf ) file and used instead of manually entering
+                    them, Which will be demonstrated later.</div>
+            </div>
+        </div>
+        <br />
+        <div class="section" id="2">
+            <p class="section-header">2. Generating self-signed server certificate.</p>
+            <div class="section-body">
+                <p>This method of generating certificate is applicable for most of the use-cases, where you have a domain name.
+                    Most common SSL certificates are server certificates, which is also called one-way SSL or single SSL.
+                    <br> This certificate is used by the browser to validate the server's identity and also to encrypt all of
+                    the communications between the server and the client devices.</p>
+                <br>
+                <p>Follow the below steps to generate Server certificate.</p>
+                <br>
+                <div class="sub-section">
+                    <p>i) First, let's generate a private key for the server certificate.</p>
+                    <br />
+                    <div class="code">openssl genrsa -des3 -out
+                        <span class="code-hilight">SERVER.key</span> 2048</div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>genrsa</td>
+                                <td>: Uses RSA algorithm to create the private key.</td>
+                            </tr>
+                            <tr>
+                                <td>-des3</td>
+                                <td>: Protects your private key password. use -nodes if you don't want to password protect the
+                                    key, but it is highly recommended that you do.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the private key file.</td>
+                            </tr>
+                            <tr>
+                                <td>2048</td>
+                                <td>: Uses 2048 bit encoding.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>Above command will prompt you to enter a password for the private key.</p>
+                </div>
+                <div class="sub-section">
+                    <br>
+                    <p>ii) Generate Certificate Signing Request ( CSR ) which will be used to generate self-signed server certificate
+                        using our proxy Root CA. Same CSR can also be used to get it signed by a valid CA.</p>
+                    <br />
+                    <div class="code">openssl req -new -out
+                        <span class="code-hilight">SERVER.csr</span> -key
+                        <span class="code-hilight">SERVER.key</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-new</td>
+                                <td>: Generates new certificate.</td>
+                            </tr>
+                            <tr>
+                                <td>-key</td>
+                                <td>: Name of the private key generated in above step ie; SERVER.key.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the generated CSR file ie: SERVER.csr.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>Above command will prompt you to enter the password for the private key, followed by basic information
+                        which will be used to generate the certificate ie;</p>
+                    <br>
+                    <div class="options-entry">
+                        <p>Country Name, State or Province Name,</p>
+                        <p>Locality ( City name ),</p>
+                        <p>Organization Name,</p>
+                        <p>Organization Unit Name ( Can be department name ),</p>
+                        <p>Common Name ( Commonly Name of the organization domain name, which will be used as an identifier
+                            ),
+                        </p>
+                        <p>Email Address ( optional ).</p>
+                    </div>
+                </div>
+                <br />
+                <div class="sub-section">
+                    <p>iii) Generate a self-signed certificate for the server with the above generated CSR and Root CA.</p>
+                    <br />
+                    <div class="code">openssl x509 -req -in
+                        <span class="code-hilight">SERVER.csr</span> -CA
+                        <span class="code-hilight">ROOT_CA.crt</span> -CAkey
+                        <span class="code-hilight">ROOT_CA.key</span> -CAcreateserial -out
+                        <span class="code-hilight">SERVER.crt</span> -days
+                        <span class="code-hilight">365</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-req</td>
+                                <td>: Requesting for a self-signed certificate.</td>
+                            </tr>
+                            <tr>
+                                <td>-CA</td>
+                                <td>: Root CA's certificate file ie; ROOT_CA.crt.</td>
+                            </tr>
+                            <tr>
+                                <td>-CAkey</td>
+                                <td>: Root CA's private key ie; ROOT_CA.key.</td>
+                            </tr>
+                            <tr>
+                                <td>-CAcreateserial</td>
+                                <td>: Generates a unique id for every certificate created.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the generated certificate ie: SERVE.crt.</td>
+                            </tr>
+                            <tr>
+                                <td>-days</td>
+                                <td>: Validity of certificate in days, here 365 days.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="section" id="3">
+            <p class="section-header">3. Generating self-signed server certificate for IP address and subdomains.</p>
+            <div class="section-body">
+                <p>If you want to test sites running on IP addresses ( Usually during development stage or when the domain name
+                    is unavailable ) and registering subdomains this method is useful.</p>
+                <p>Follow the below steps to generate server-certificate for IP address.</p>
+                <br>
+                <div class="sub-section">
+                    <p>i) First, let's generate a private key for the server certificate.</p>
+                    <br />
+                    <div class="code">openssl genrsa -des3 -out
+                        <span class="code-hilight">SERVER.key</span> 2048</div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>genrsa</td>
+                                <td>: Uses RSA algorithm to create the private key.</td>
+                            </tr>
+                            <tr>
+                                <td>-des3</td>
+                                <td>: protects your private key password. use -nodes if you don't want to password protect the
+                                    key, but it is highly recommended that you do.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the private key file.</td>
+                            </tr>
+                            <tr>
+                                <td>2048</td>
+                                <td>: Uses 2048 bit encoding.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>Above command will prompt you to enter a password for the private key.</p>
+                </div>
+                <br>
+                <div class="sub-section">
+                    <p>ii) Generate Certificate Signing Request ( CSR ) which will be used to generate self-signed server certificate
+                        using our proxy Root CA. Same CSR can also be used to get it signed by a valid CA.</p>
+                    <br />
+                    <div class="code">openssl req -new -out
+                        <span class="code-hilight">SERVER.csr</span> -key
+                        <span class="code-hilight">SERVER.key</span> -config
+                        <span class="code-hilight">SERVER.csr.cnf</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-new</td>
+                                <td>: Generates new certificate.</td>
+                            </tr>
+                            <tr>
+                                <td>-key</td>
+                                <td>: Name of the private key generated in above step ie; SERVER.key.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the generated CSR file ie: SERVER.csr.</td>
+                            </tr>
+                            <tr>
+                                <td>-config</td>
+                                <td>: Basic information used to generate CSR ( similar to the step in generating Root CA certificate
+                                    ) can be also be saved in a file in the following format.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>SERVER.csr.cnf file content, modiefy as per your need.</p>
+                    <div class="file">
+                        <p>[ req ]</p>
+                        <p>default_bits = 2048</p>
+                        <p>prompt = no</p>
+                        <p>default_md = sha256</p>
+                        <p>distinguished_name = dn</p>
+                        <p>req_extensions = req_ext</p>
+                        <p>&nbsp;</p>
+                        <p># change as per your need.</p>
+                        <p>[ dn ]</p>
+                        <p>C = IN</p>
+                        <p>ST = Karnataka</p>
+                        <p>L = Bangalore</p>
+                        <p>O = THBS</p>
+                        <p>OU = IT</p>
+                        <p># domain name.</p>
+                        <p>CN = www.thbs.com</p>
+                        <p>&nbsp;</p>
+                        <p>[ req_ext ]</p>
+                        <p>basicConstraints = CA:FALSE</p>
+                        <p>keyUsage = digitalSignature,keyEncipherment</p>
+                        <p>extendedKeyUsage = serverAuth,clientAuth</p>
+                        <p>subjectAltName = @alt_names</p>
+                        <p>&nbsp;</p>
+                        <p># useful for registering subdomains, and testing sites which are only running on IP address.</p>
+                        <p>[ alt_names ]</p>
+                        <p># IMPORTANT: Certificates generated for IP address must also contain a named domain, So localhost
+                            will work fine.</p>
+                        <p>DNS.1 = localhost</p>
+                        <p># Register multiple subdomains.</p>
+                        <p>DNS.2 = subdomain_1.domain.com</p>
+                        <p>DNS.3 = subdomain_2.domain.com</p>
+                        <p># Multiple IP addresses can also be registered.</p>
+                        <p>IP.1 = 172.30.66.152</p>
+                        <p>IP.2 = 127.0.0.1</p>
+                    </div>
+                    <br />
+                    <p>Above command will prompt you to enter a password for the SERVER.key's private key.</p>
+                </div>
+                <br>
+                <div class="sub-section">
+                    <p>iii) Generate a self-signed certificate for the server with the above generated CSR and Root CA.</p>
+                    <br />
+                    <div class="code">openssl x509 -req -in
+                        <span class="code-hilight">SERVER.csr</span> -CA
+                        <span class="code-hilight">ROOT_CA.crt</span> -CAkey
+                        <span class="code-hilight">ROOT_CA.key</span> -CAcreateserial -out
+                        <span class="code-hilight">SERVER.crt</span> -days
+                        <span class="code-hilight">365</span> -extfile
+                        <span class="code-hilight">SERVER_V3.ext</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-req</td>
+                                <td>: Requesting for a self-signed certificate.</td>
+                            </tr>
+                            <tr>
+                                <td>-CA</td>
+                                <td>: Root CA's certificate file ie; ROOT_CA.crt.</td>
+                            </tr>
+                            <tr>
+                                <td>-CAkey</td>
+                                <td>: Root CA's private key ie; ROOT_CA.key.</td>
+                            </tr>
+                            <tr>
+                                <td>-CAcreateserial</td>
+                                <td>: Generates a unique id for every certificate created.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the generated certificate ie: SERVER.crt.</td>
+                            </tr>
+                            <tr>
+                                <td>-days</td>
+                                <td>: Validity of certificate in days, here 365 days.</td>
+                            </tr>
+                            <tr>
+                                <td>-extfile</td>
+                                <td>: Contains information necessary to generate the certificate. The content of the SERVER_V3.ext
+                                    file is as below.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>SERVER_V3.ext file content, modiefy as per your need.</p>
+                    <div class="file">
+                        <p>authorityKeyIdentifier = keyid,issuer</p>
+                        <p>basicConstraints = CA:FALSE</p>
+                        <p>keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment</p>
+                        <p>subjectAltName = @alt_names</p>
+                        <p>&nbsp;</p>
+                        <p># Must be same as SERVER.csr.cnf file</p>
+                        <p>[ alt_names ]</p>
+                        <p>DNS.1 = localhost</p>
+                        <p>DNS.2 = subdomain_1.domain.com</p>
+                        <p>DNS.3 = subdomain_2.domain.com</p>
+                        <p>IP.1 = 172.30.66.152</p>
+                        <p>IP.2 = 127.0.0.1</p>
+                    </div>
+                    <br />
+                    <p class="important-text">IMPORTANT: While registering multiple DNS and IP add them is serial order. If any of these options is
+                        not needed the don't add them.</p>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="section" id="4">
+            <p class="section-header">4. Generating self-signed client certificate.</p>
+            <div class="section-body">
+                <p>Client certificates are used to validate clients by the server which is commonly known as Dual-SSL or 2-way
+                    SSL. Steps to generate client certificate are same as in server certificate.</p>
+                <p>Follow the below steps to generate client-certificate.</p>
+                <br>
+                <div class="sub-section">
+                    <p>i) First, let's generate a private key for the client certificate.</p>
+                    <br />
+                    <div class="code">openssl genrsa -des3 -out
+                        <span class="code-hilight">CLIENT.key</span> 2048</div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>genrsa</td>
+                                <td>: Uses RSA algorithm to create the private key.</td>
+                            </tr>
+                            <tr>
+                                <td>-des3</td>
+                                <td>: protects your private key password. use -nodes if you don't want to password protect the
+                                    key, but it is highly recommended that you do.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the private key file.</td>
+                            </tr>
+                            <tr>
+                                <td>2048</td>
+                                <td>: Uses 2048 bit encoding.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>Above command will prompt you to enter a password for the private key.</p>
+                </div>
+                <br>
+                <div class="sub-section">
+                    <p>ii) Generate Certificate Signing Request ( CSR ) which will be used to generate self-signed client certificate
+                        using our proxy Root CA. Same CSR can also be used to get it signed by a valid CA.</p>
+                    <br />
+                    <div class="code">openssl req -new -key
+                        <span class="code-hilight">CLIENT.key</span> -out
+                        <span class="code-hilight">CLIENT.csr</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-new</td>
+                                <td>: Generates new certificate.</td>
+                            </tr>
+                            <tr>
+                                <td>-key</td>
+                                <td>: Name of the private key generated in above step ie; SERVER.key.</td>
+                            </tr>
+                            <tr>
+                                <td>-sha256</td>
+                                <td>: Hashing algorithm used in generating the certificate which is of 256 bits in length.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the generated CSR file ie: CLIENT.csr.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>Above command will prompt you to enter the password for the private key, followed by basic information
+                        which will be used to generate the certificate ie;</p>
+                    <div class="options-entry">
+                        <p>Country Name, State or Province Name,</p>
+                        <p>Locality ( City name ),</p>
+                        <p>Organization Name,</p>
+                        <p>Organization Unit Name ( Can be department name ),</p>
+                        <p>Common Name ( Commonly Name of the organization domain name, which will be used as an identifier
+                            ),
+                        </p>
+                        <p>Email Address ( optional ).</p>
+                    </div>
+                </div>
+                <br>
+                <div class="sub-section">
+                    <p>iii) Generate a self-signed certificate for the client with the above generated CSR and Root CA.</p>
+                    <br />
+                    <div class="code">openssl x509 -req -in
+                        <span class="code-hilight">CLIENT.csr</span> -CA
+                        <span class="code-hilight">ROOT_CA.crt</span> -CAkey
+                        <span class="code-hilight">ROOT_CA.key</span> -CAcreateserial -out
+                        <span class="code-hilight">CLIENT.crt</span> -days
+                        <span class="code-hilight">365</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-req</td>
+                                <td>: Requesting for a self-signed certificate.</td>
+                            </tr>
+                            <tr>
+                                <td>-CA</td>
+                                <td>: Root CA's certificate file ie; ROOT_CA.crt.</td>
+                            </tr>
+                            <tr>
+                                <td>-CAkey</td>
+                                <td>: Root CA's private key ie; ROOT_CA.key.</td>
+                            </tr>
+                            <tr>
+                                <td>-CAcreateserial</td>
+                                <td>: Generates a unique id for every certificate created.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name of the generated certificate ie: CLIENT.crt.</td>
+                            </tr>
+                            <tr>
+                                <td>-days</td>
+                                <td>: Validity of certificate in days, here 365 days</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="section" id="5">
+            <p class="section-header">5. Creating new keystore from existing certificates.</p>
+            <div class="section-body">
+                <p>Keystore is the easier way of managing and organizing all of the private keys and certificates. There are
+                    2 formats PKCS12 ( Public Key Cryptography System ) and java keystore. PKCS12 is the new format provided
+                    by openssl, but java format is widely used.</p>
+                <br>
+                <div class="sub-section">
+                    <p>i) Creating PKCS12 keystore.</p>
+                    <br />
+                    <div class="code">openssl pkcs12 -export -clcerts -in
+                        <span class="code-hilight">CLIENT.crt</span> -inkey
+                        <span class="code-hilight">CLIENT.key</span> -out
+                        <span class="code-hilight">CLIENT_KEYSTORE.p12</span> -name
+                        <span class="code-hilight">client-certificate</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>pkcs12</td>
+                                <td>: Format of the generated keystore.</td>
+                            </tr>
+                            <tr>
+                                <td>-clcerts</td>
+                                <td>: Client certificates type.</td>
+                            </tr>
+                            <tr>
+                                <td>-in</td>
+                                <td>: Input certificates to be added into keystore, ie; CLIENT.crt.</td>
+                            </tr>
+                            <tr>
+                                <td>-inkey</td>
+                                <td>: Private key file, ie; CLIENT.key.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Name for keystore to be generated, ie; CLIENT_KEYSTORE.p12.</td>
+                            </tr>
+                            <tr>
+                                <td>-name</td>
+                                <td>: Unique alias of the certificate, Which is used to identify certificates in the keystore.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <div class="sub-section">
+                    <p>ii) Creating java keystore.</p>
+                    <br />
+                    <p>Java keystore is proprietary formats by Sunmicro systems, which is widely used. Currently there is no
+                        direct way of creating java keystore from existing certificates, but PKCS12 format keystore can be
+                        converted into Java format.</p>
+                    <br />
+                    <div class="code">keytool -v -importkeystore -srckeystore
+                        <span class="code-hilight">CLIENT.p12</span> -srcalias
+                        <span class="code-hilight">client-certificate</span> -destkeystore
+                        <span class="code-hilight">CLIENT.jks</span> -deststoretype
+                        <span class="code-hilight">JKS</span>
+                    </div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-v</td>
+                                <td>: Prints result in the readable format.</td>
+                            </tr>
+                            <tr>
+                                <td>-importkeystore</td>
+                                <td>: Specifies that keystore format conversion operation to be performed.</td>
+                            </tr>
+                            <tr>
+                                <td>-srckeystore</td>
+                                <td>: Name of the source keystore file.</td>
+                            </tr>
+                            <tr>
+                                <td>-srcalias</td>
+                                <td>: Alias of the key to be imported into new keystore.</td>
+                            </tr>
+                            <tr>
+                                <td>-destkeystore</td>
+                                <td>: Name of the destination keystore file.</td>
+                            </tr>
+                            <tr>
+                                <td>-deststoretype</td>
+                                <td>: Type of the destination keystore format.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <p>Above command can also be used to convert JKS format into PKCS12 format just by replacing -deststoretype
+                        into PKCS12</p>
+                </div>
+                <br />
+                <div class="sub-section">
+                    <p>iii) PEM format for adding client certificates into the browser.</p>
+                    <br />
+                    <p>Adding client certificates need keystore to be in PEM format, ie; keystore with .pem extension. Which
+                        can be done with the following command.</p>
+                    <br />
+                    <div class="code">openssl pkcs12 -in
+                        <span class="code-hilight">CLIENT.p12</span> -out
+                        <span class="code-hilight">CLIENT.pem</span> -clcerts</div>
+                    <table class="code-breakdown">
+                        <tbody>
+                            <tr>
+                                <td>-in</td>
+                                <td>: Input keystore file name.</td>
+                            </tr>
+                            <tr>
+                                <td>-out</td>
+                                <td>: Output keystore file name.</td>
+                            </tr>
+                            <tr>
+                                <td>-clcerts</td>
+                                <td>: Indicates client certificate type.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="section" id="6">
+            <p class="section-header">6. Importing or add certificates into existing keystores.</p>
+            <br />
+            <div class="code">keytool -importcert -file
+                <span class="code-hilight">CLIENT.crt</span> -alias
+                <span class="code-hilight">client-certificate</span> -keystore
+                <span class="code-hilight">CLIENT_KEYSTORE.jks</span>
+            </div>
+            <table class="code-breakdown">
+                <tbody>
+                    <tr>
+                        <td>-importcert</td>
+                        <td>: Indicates importing of certificates action.</td>
+                    </tr>
+                    <tr>
+                        <td>-file</td>
+                        <td>: Name of the certificate file to be imported into keystore.</td>
+                    </tr>
+                    <tr>
+                        <td>-alias</td>
+                        <td>: Alias given for the certificate.</td>
+                    </tr>
+                    <tr>
+                        <td>-keystore</td>
+                        <td>: Name of the destination keystore.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="section" id="7">
+            <p class="section-header">7. Deleting the certificate from the keystore.</p>
+            <br />
+            <div class="code">keytool -delete -alias
+                <span class="code-hilight">client</span> -keystore
+                <span class="code-hilight">TRUSTSTORE.jks</span>
+            </div>
+            <table class="code-breakdown">
+                <tbody>
+                    <tr>
+                        <td>-delete</td>
+                        <td>: Indicates the action to be performed, ie; deletion of the certificate from the keystore.</td>
+                    </tr>
+                    <tr>
+                        <td>-alias</td>
+                        <td>: Alias of the certificate to be deleted from the keystore.</td>
+                    </tr>
+                    <tr>
+                        <td>-keystore</td>
+                        <td>: Name of the target keystore file.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="section" id="8">
+            <p class="section-header">8. Renaming certificate alias.</p>
+            <br />
+            <div class="code">keytool -changealias -keystore
+                <span class="code-hilight">CLIENT_KEYSTORE.jks</span> -alias
+                <span class="code-hilight">client-certificate</span> -destalias
+                <span class="code-hilight">client-certificate-new</span>
+            </div>
+            <table class="code-breakdown">
+                <tbody>
+                    <tr>
+                        <td>-changealias</td>
+                        <td>: Indicates the type of action to be performed, ie; renaming alias.</td>
+                    </tr>
+                    <tr>
+                        <td>-keystore</td>
+                        <td>: Name of the target keystore file name.</td>
+                    </tr>
+                    <tr>
+                        <td>-alias</td>
+                        <td>: Target alias which needs to be changed.</td>
+                    </tr>
+                    <tr>
+                        <td>-destalias</td>
+                        <td>: New alias to be renamed with.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="section" id="9">
+            <p class="section-header">9. Changing keystore password.</p>
+            <br />
+            <div class="code">keytool -storepasswd -keystore
+                <span class="code-hilight">CLIENT_KEYSTORE.jks</span>
+            </div>
+            <table class="code-breakdown">
+                <tbody>
+                    <tr>
+                        <td>-storepasswd</td>
+                        <td>: Indicates the type of action to be performed, ie; changing keystore password.</td>
+                    </tr>
+                    <tr>
+                        <td>-keystore</td>
+                        <td>: Name of the target keystore whose password is to be changed.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="section" id="10">
+            <p class="section-header">10. List keystore content.</p>
+            <br />
+            <div class="code">keytool -list -v -keystore
+                <span class="code-hilight">KEYSTORE_NAME.jks</span>
+            </div>
+            <table class="code-breakdown">
+                <tbody>
+                    <tr>
+                        <td>-list</td>
+                        <td>: Indicates the type of action to be performed, ie; listing the content of stores.</td>
+                    </tr>
+                    <tr>
+                        <td>-v</td>
+                        <td>: Prints content on readable format for better understanding.</td>
+                    </tr>
+                    <tr>
+                        <td>-keystore</td>
+                        <td>: Name of the target keystore whose content is to be listed.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

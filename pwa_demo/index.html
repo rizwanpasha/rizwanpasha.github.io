@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Progressive web app</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="styles.css" rel="stylesheet">
+    <meta name="theme-color" content="#0267cc">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="shortcut icon" href="./icon/favicon.png">
+</head>
+
+<body>
+    <header>
+        <h1>Progressive web application</h1>
+        <h3>(Use on mobile device.)</h3>
+    </header>
+
+    <div class="offline-msg">
+        <p></p>
+    </div>
+    <div class="container">
+        <div class="card">
+            <div class="img-container">
+                <img src="https://estes-park.com/sites/default/files/images/7-July_East-Inlet-Sunset-6%2030%202012.jpg" alt="">
+            </div>
+            <p>“I like it when a flower or a little tuft of grass grows through a crack in the concrete.”
+            </p>
+            <P> ― George Carlin</p>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="https://sarawaktourism.com/v2/wp-content/uploads/2014/09/sarawak-borneo-backyard-BAKO-NATIONAL-PARK-small-600x400.jpg"
+                    alt="">
+            </div>
+            <P>“Live in each season as it passes; breathe the air, drink the drink, taste the fruit, and resign yourself to
+                the influence of the earth.” </P>
+            <p>― Henry David Thoreau, Walden</p>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/3718095/300/200/m2/fpc/wm0/qjjx65hqis0ckgzao1ja4lcppx4tw8wsm2vtio3xtkmvbxtqv0u8dm76kvvbg3x3-.jpg?1512995799&s=4a63f7ad963545a9e5981d37ac3224cb"
+                    alt="">
+            </div>
+            <P>“If I were a tree, I would have no reason to love a human.” </P>
+            <p>― Maggie Stiefvater, The Raven Boys</p>
+        </div>
+        <div class="card">
+            <div class="img-container">
+                <img src="https://www.photographyatthesummit.com/wp-content/uploads/2017/10/LakeSamRoubin_-4-600x400.jpg" alt="">
+            </div>
+            <P>“You will manage to keep a woman in love with you, only for as long as you can keep her in love with the person
+                she becomes when she is with you.” </P>
+            <p>― C. JoyBell C.</p>
+        </div>
+        <div class="card">
+            <div class="img-container">
+                <img src="https://blog.go-today.com/wp-content/uploads/galapagos.jpg" alt="">
+            </div>
+            <P>“I like this place and could willingly waste my time in it.” </P>
+            <p>― William Shakespeare</p>
+        </div>
+        <div class="card">
+            <div class="img-container">
+                <img src="https://jejutourism.files.wordpress.com/2016/06/8.jpg" alt="">
+            </div>
+            <P>“Nature's first green is gold, Her hardest hue to hold. Her early leaf's a flower; But only so an hour.”
+            </P>
+            <p>― Robert Frost</p>
+        </div>
+    </div>
+    <script>
+        let offline_msg = document.querySelector('.offline-msg');
+
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.register('./sw.js').then(function () {
+                console.log("service worker registered");
+                if (navigator.onLine) {
+                    console.log("online");
+                    callOffline("Ready to go offline.");
+                } else {
+                    console.log("offline");
+                    callOffline("You are offline.");
+                }
+            })
+        }
+
+        function callOffline(newText) {
+            offline_msg.children[0].textContent = newText;
+            offline_msg.classList.add("show-offline-msg");
+            setTimeout(function () {
+                offline_msg.classList.remove("show-offline-msg");
+            }, 2000)
+        }
+    </script>
+</body>
+
+</html>
