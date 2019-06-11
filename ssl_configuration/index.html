@@ -675,9 +675,9 @@
             <p class="section-header">6. Importing or add certificates into existing keystores.</p>
             <br />
             <div class="code">keytool -importcert -file
-                <span class="code-hilight">CLIENT.crt</span> -alias
-                <span class="code-hilight">client-certificate</span> -keystore
-                <span class="code-hilight">CLIENT_KEYSTORE.jks</span>
+                <span class="code-hilight">CERTIFICATE.crt</span> -alias
+                <span class="code-hilight">certificate</span> -keystore
+                <span class="code-hilight">KEYSTORE.jks</span>
             </div>
             <table class="code-breakdown">
                 <tbody>
@@ -705,7 +705,7 @@
             <p class="section-header">7. Deleting the certificate from the keystore.</p>
             <br />
             <div class="code">keytool -delete -alias
-                <span class="code-hilight">client</span> -keystore
+                <span class="code-hilight">certificate</span> -keystore
                 <span class="code-hilight">TRUSTSTORE.jks</span>
             </div>
             <table class="code-breakdown">
@@ -730,9 +730,9 @@
             <p class="section-header">8. Renaming certificate alias.</p>
             <br />
             <div class="code">keytool -changealias -keystore
-                <span class="code-hilight">CLIENT_KEYSTORE.jks</span> -alias
-                <span class="code-hilight">client-certificate</span> -destalias
-                <span class="code-hilight">client-certificate-new</span>
+                <span class="code-hilight">KEYSTORE.jks</span> -alias
+                <span class="code-hilight">certificate</span> -destalias
+                <span class="code-hilight">certificate-new</span>
             </div>
             <table class="code-breakdown">
                 <tbody>
@@ -760,7 +760,7 @@
             <p class="section-header">9. Changing keystore password.</p>
             <br />
             <div class="code">keytool -storepasswd -keystore
-                <span class="code-hilight">CLIENT_KEYSTORE.jks</span>
+                <span class="code-hilight">KEYSTORE.jks</span>
             </div>
             <table class="code-breakdown">
                 <tbody>
