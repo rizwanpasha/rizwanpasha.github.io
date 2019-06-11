@@ -604,9 +604,9 @@
                         converted into Java format.</p>
                     <br />
                     <div class="code">keytool -v -importkeystore -srckeystore
-                        <span class="code-hilight">CLIENT.p12</span> -srcalias
-                        <span class="code-hilight">client-certificate</span> -destkeystore
-                        <span class="code-hilight">CLIENT.jks</span> -deststoretype
+                        <span class="code-hilight">CERTIFICATE.p12</span> -srcalias
+                        <span class="code-hilight">certificate</span> -destkeystore
+                        <span class="code-hilight">CERTIFICATE.jks</span> -deststoretype
                         <span class="code-hilight">JKS</span>
                     </div>
                     <table class="code-breakdown">
@@ -643,14 +643,14 @@
                 </div>
                 <br />
                 <div class="sub-section">
-                    <p>iii) PEM format for adding client certificates into the browser.</p>
+                    <p>iii) PEM format for adding certificates into the browser.</p>
                     <br />
-                    <p>Adding client certificates need keystore to be in PEM format, ie; keystore with .pem extension. Which
+                    <p>Adding certificates to browsers need keystore to be in PEM format, ie; keystore with .pem extension. Which
                         can be done with the following command.</p>
                     <br />
                     <div class="code">openssl pkcs12 -in
-                        <span class="code-hilight">CLIENT.p12</span> -out
-                        <span class="code-hilight">CLIENT.pem</span> -clcerts</div>
+                        <span class="code-hilight">CERTIFICATE.p12</span> -out
+                        <span class="code-hilight">CERTIFICATE.pem</span> -clcerts</div>
                     <table class="code-breakdown">
                         <tbody>
                             <tr>
@@ -663,7 +663,7 @@
                             </tr>
                             <tr>
                                 <td>-clcerts</td>
-                                <td>: Indicates client certificate type.</td>
+                                <td>: Indicates certificate type.</td>
                             </tr>
                         </tbody>
                     </table>
