@@ -561,10 +561,10 @@
                     <p>i) Creating PKCS12 keystore.</p>
                     <br />
                     <div class="code">openssl pkcs12 -export -clcerts -in
-                        <span class="code-hilight">CLIENT.crt</span> -inkey
-                        <span class="code-hilight">CLIENT.key</span> -out
-                        <span class="code-hilight">CLIENT_KEYSTORE.p12</span> -name
-                        <span class="code-hilight">client-certificate</span>
+                        <span class="code-hilight">CERTIFICATE.crt</span> -inkey
+                        <span class="code-hilight">CERTIFICATE.key</span> -out
+                        <span class="code-hilight">KEYSTORE.p12</span> -name
+                        <span class="code-hilight">certificate</span>
                     </div>
                     <table class="code-breakdown">
                         <tbody>
@@ -578,15 +578,15 @@
                             </tr>
                             <tr>
                                 <td>-in</td>
-                                <td>: Input certificates to be added into keystore, ie; CLIENT.crt.</td>
+                                <td>: Input certificates to be added into keystore, ie; CERTIFICATE.crt.</td>
                             </tr>
                             <tr>
                                 <td>-inkey</td>
-                                <td>: Private key file, ie; CLIENT.key.</td>
+                                <td>: Private key file, ie; CERTIFICATE.key.</td>
                             </tr>
                             <tr>
                                 <td>-out</td>
-                                <td>: Name for keystore to be generated, ie; CLIENT_KEYSTORE.p12.</td>
+                                <td>: Name for keystore to be generated, ie; KEYSTORE.p12.</td>
                             </tr>
                             <tr>
                                 <td>-name</td>
