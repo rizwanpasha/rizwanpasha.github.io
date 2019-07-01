@@ -7,3 +7,4 @@
 3. [Progressive web app](https://rizwanpasha.github.io/pwa_demo/), simple demonstration of a progressive web application showing offline capability on mobile devices implemented using service worker.
 4. [Canvas - Draw triangles by draging your mouse](https://rizwanpasha.github.io/canvas/), simple canvas app to draw triangles by draging your mouse.
 5. [Optical Character Recognition ](https://rizwanpasha.github.io/ocr_demo/), React app to extract/recognize characters from an image.
+6. [recognize](https://rizwanpasha.github.io/recognize/), Real-time on-device object detection using Flutter and TFLite.

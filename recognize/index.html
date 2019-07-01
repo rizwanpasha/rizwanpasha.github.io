@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      html,
+      body,
+      .wrapper {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        box-sizing: border-box;
+        font-size: 1.2em;
+        color: white;
+        min-width: 100vw;
+        min-height: 100vh;
+      }
+
+      .wrapper {
+        padding: 3em 0em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        background: linear-gradient(#257de2, #0d3998);
+      }
+
+      .main > img {
+        width: 6em;
+        border: 3px solid white;
+        border-radius: 50%;
+      }
+
+      .main {
+        display: flex;
+        align-items: center;
+      }
+
+      .main > span {
+        margin-left: 1em;
+      }
+
+      .action-buttons {
+        display: flex;
+      }
+
+      .action-buttons > a {
+        border: 3px solid white;
+        padding: 0.6em 1.2em;
+        margin: 0.5em;
+        text-decoration: none;
+        color: white;
+      }
+      .description a {
+        color: white;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body class="wrapper">
+    <section class="main">
+      <img src="./assets/icon.png" alt="recognize app logo" />
+      <span>Recognize</span>
+    </section>
+    <section class="action-buttons">
+      <a href="" target="_blank">Download for android</a>
+      <a href="https://github.com/rizwanpasha/recognize" target="_blank"
+        >Source code at GitHub</a
+      >
+    </section>
+    <section class="description">
+      <p>
+        Real-time on-device object detection in
+        <a href="https://flutter.dev/" target="_blank">Flutter</a> and
+        <a href="https://www.tensorflow.org/lite" target="_blank">TFLite.</a>
+      </p>
+    </section>
+  </body>
+</html>
