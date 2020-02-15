@@ -8,3 +8,4 @@
 4. [Canvas - Draw triangles by draging your mouse](https://rizwanpasha.github.io/canvas/), simple canvas app to draw triangles by draging your mouse.
 5. [Optical Character Recognition ](https://rizwanpasha.github.io/ocr_demo/), React app to extract/recognize characters from an image.
 6. [recognize](https://rizwanpasha.github.io/recognize/), Real-time on-device object detection using Flutter and TFLite.
+6. [SSL Configuration. A Complete Walkthrough.](https://rizwanpasha.github.io/ssl_configuration/), Create SSL Certificates using OpenSSL.
