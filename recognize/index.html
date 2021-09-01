@@ -1,136 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta
-      name="description"
-      content="Real-time on-device object recognition using flutter and tflite."
-    />
-    <meta
-      name="keywords"
-      content="flutter,tflite,vision,object recognition,on device, real time,image recognition"
-    />
-    <meta name="author" content="Rizwan Pasha" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./assets/favicon.png"
-    />
-    <title>Recognize</title>
-    <style>
-      html,
-      body,
-      .wrapper {
-        padding: 0;
-        margin: 0;
-        border: 0;
-        box-sizing: border-box;
-        font-size: 1.2em;
-        color: white;
-        min-width: 100vw;
-        min-height: 100vh;
-        font-family: sans-serif;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta name="description" content="Real-time on-device object recognition using flutter and tflite." />
+  <meta name="keywords" content="flutter,tflite,vision,object recognition,on device, real time,image recognition" />
+  <meta name="author" content="Rizwan Pasha" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon.png" />
+  <title>Recognize</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JFEPJJ1ENR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-JFEPJJ1ENR');
+  </script>
+  
+  <style>
+    html,
+    body,
+    .wrapper {
+      padding: 0;
+      margin: 0;
+      border: 0;
+      box-sizing: border-box;
+      font-size: 1.2em;
+      color: white;
+      min-width: 100vw;
+      min-height: 100vh;
+      font-family: sans-serif;
+    }
+
+    .wrapper {
+      padding: 3em 0em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+      background: linear-gradient(#257de2, #0d3998);
+    }
+
+    .main>img {
+      width: 6em;
+      border: 3px solid white;
+      border-radius: 50%;
+    }
+
+    .main {
+      display: flex;
+      align-items: center;
+      margin: 1em;
+    }
+
+    .main>span {
+      margin-left: 1em;
+    }
+
+    .action-buttons {
+      display: flex;
+      margin: 1em;
+    }
+
+    .action-buttons>a {
+      border: 3px solid white;
+      padding: 0.6em 1.2em;
+      margin: 0.5em;
+      text-decoration: none;
+      color: white;
+    }
+
+    .description {
+      margin: 1em;
+    }
+
+    .description a {
+      color: white;
+      padding: 5px;
+    }
+
+    .images {
+      display: flex;
+      justify-content: center;
+    }
+
+    .images>img {
+      max-width: 25%;
+      margin: 1em;
+    }
+
+    @media only screen and (max-width: 650px) {
+      * {
+        font-size: 0.8em;
       }
 
-      .wrapper {
-        padding: 3em 0em;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-evenly;
-        background: linear-gradient(#257de2, #0d3998);
+      .main>img {
+        width: 5em;
+
       }
 
-      .main > img {
-        width: 6em;
-        border: 3px solid white;
-        border-radius: 50%;
+      .images>img {
+        max-width: 45%;
       }
+    }
+  </style>
+</head>
 
-      .main {
-        display: flex;
-        align-items: center;
-        margin: 1em;
-      }
+<body class="wrapper">
+  <section class="main">
+    <img src="./assets/icon.png" alt="recognize app logo" />
+    <span>Recognize</span>
+  </section>
+  <section class="action-buttons">
+    <a href="https://github.com/rizwanpasha/recognize/raw/master/recognize%20app%20assets/Recognize_1.0.0.apk"
+      target="_blank">Download Android app</a>
+    <a href="https://github.com/rizwanpasha/recognize" target="_blank">Source code at GitHub</a>
+  </section>
+  <section class="description">
+    <p>
+      Real-time on-device object detection in
+      <a href="https://flutter.dev/" target="_blank">Flutter</a> and
+      <a href="https://www.tensorflow.org/lite" target="_blank">TFLite.</a>
+    </p>
+  </section>
+  <section class="images">
+    <img src="./assets/bottle.png" alt="" />
+    <img src="./assets/traffic light.png" alt="" />
+  </section>
+</body>
 
-      .main > span {
-        margin-left: 1em;
-      }
-
-      .action-buttons {
-        display: flex;
-        margin: 1em;
-      }
-
-      .action-buttons > a {
-        border: 3px solid white;
-        padding: 0.6em 1.2em;
-        margin: 0.5em;
-        text-decoration: none;
-        color: white;
-      }
-
-      .description {
-        margin: 1em;
-      }
-
-      .description a {
-        color: white;
-        padding: 5px;
-      }
-
-      .images {
-        display: flex;
-        justify-content: center;
-      }
-
-      .images > img {
-        max-width: 25%;
-        margin: 1em;
-      }
-
-      @media only screen and (max-width: 650px) {
-        *{
-          font-size:0.8em;
-        }
-        .main > img {
-          width: 5em;
-         
-        }
-        .images > img{
-          max-width: 45%;
-        }
-      }
-    </style>
-  </head>
-  <body class="wrapper">
-    <section class="main">
-      <img src="./assets/icon.png" alt="recognize app logo" />
-      <span>Recognize</span>
-    </section>
-    <section class="action-buttons">
-      <a
-        href="https://github.com/rizwanpasha/recognize/raw/master/recognize%20app%20assets/Recognize_1.0.0.apk"
-        target="_blank"
-        >Download Android app</a
-      >
-      <a href="https://github.com/rizwanpasha/recognize" target="_blank"
-        >Source code at GitHub</a
-      >
-    </section>
-    <section class="description">
-      <p>
-        Real-time on-device object detection in
-        <a href="https://flutter.dev/" target="_blank">Flutter</a> and
-        <a href="https://www.tensorflow.org/lite" target="_blank">TFLite.</a>
-      </p>
-    </section>
-    <section class="images">
-      <img src="./assets/bottle.png" alt="" />
-      <img src="./assets/traffic light.png" alt="" />
-    </section>
-  </body>
 </html>
