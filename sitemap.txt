@@ -7,3 +7,4 @@ https://rizwanpasha.github.io/ocr_demo/
 https://rizwanpasha.github.io/recognize/
 https://rizwanpasha.github.io/ssl_configuration/
 https://rizwanpasha.github.io/web_notification/
+https://rizwanpasha.github.io/algorithms_visualized/
