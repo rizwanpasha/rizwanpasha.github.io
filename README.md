@@ -2,7 +2,7 @@
 ### Collection of personal projects.
 
 
-1. [Algorithms Visualized](https://rizwanpasha.github.io/algorithms_visualized/), See algorithms work.
+1. [Algorithms Visualized](https://rizwanpasha.github.io/algorithms-visualized/), See algorithms work.
 2. [SSL Configuration. A Complete Walkthrough.](https://rizwanpasha.github.io/ssl_configuration/), Create SSL Certificates using OpenSSL.
 3. [Movie Database](https://rizwanpasha.github.io/movie_database/), implemented using Angular and [TMDB](https://www.themoviedb.org) API.
 4. [Country Details](https://rizwanpasha.github.io/onedirect), this application implemented as a part of interview for [Onedirect](https://www.onedirect.in/) using Angular.
